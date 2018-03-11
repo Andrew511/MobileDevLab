@@ -8,8 +8,10 @@ import android.text.Layout;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +24,15 @@ public class MainActivity extends AppCompatActivity {
                 Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_landscape);
             currLay = R.layout.activity_landscape;
+            Button button = (Button) findViewById(R.id.chatSend);
+            final TextView chatLog = (TextView) findViewById(R.id.chatLog);
+            final EditText chatMessage = (EditText) findViewById(R.id.chatMessage);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String text =  chatMessage.getText() + "/n" + chatLog.getText();
+                    chatLog.setText(text);
+                }
+            });
         } else{
             setContentView(R.layout.activity_portrait);
             currLay = R.layout.activity_portrait;
@@ -56,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
         //images.recycle();
         //this leaves the keyboard hidden on load
         getWindow().setSoftInputMode(
