@@ -2,6 +2,7 @@ package com.example.wregea63.myapplication;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -11,9 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ImageView selectedCard;
+    private int tableSpot = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_landscape);
             currLay = R.layout.activity_landscape;
-            Button button = (Button) findViewById(R.id.chatSend);
+            /*Button button = (Button) findViewById(R.id.chatSend);
             final TextView chatLog = (TextView) findViewById(R.id.chatLog);
             final EditText chatMessage = (EditText) findViewById(R.id.chatMessage);
             button.setOnClickListener(new View.OnClickListener() {
@@ -32,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                     String text =  chatMessage.getText() + "/n" + chatLog.getText();
                     chatLog.setText(text);
                 }
-            });
+            }); */
         } else{
             setContentView(R.layout.activity_portrait);
             currLay = R.layout.activity_portrait;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView cardView = ((ImageView)findViewById(handArray.getResourceId(i, R.id.card1)));
             cardView.setImageResource(cardChoice);
             cardView.setTag(cardChoice);
-            cardView.setOnClickListener(new View.OnClickListener() {
+            /*cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Add your code in here!
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-            });
+            });*/
         }
 
         //images.recycle();
@@ -74,5 +79,31 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
+    }
+
+    public void sendChat(View v){
+        String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
+        ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value+ "\n" +((TextView)findViewById(R.id.chatLog)).getText());
+        ((EditText)findViewById(R.id.chatMessage)).setText("");
+    }
+
+    public void selectCard(View v){
+        if(selectedCard==null){
+            ((ImageView)v).setColorFilter(Color.argb(100, 0, 255, 255));   //setBackgroundColor(Color.CYAN);
+            selectedCard = (ImageView)v;
+        } else {
+            if((ImageView)v == selectedCard){
+                ((ImageView)v).setColorFilter(Color.argb(0, 255, 255, 255));
+                selectedCard = null;
+                TypedArray table = getResources().obtainTypedArray(R.array.fieldSpots);
+                ((ImageView)findViewById(table.getResourceId(tableSpot, 0))).setImageDrawable(((ImageView) v).getDrawable());
+                ((LinearLayout)v.getParent()).removeView(v);
+                tableSpot++;
+            } else{
+                selectedCard.setColorFilter(Color.argb(0, 255, 255, 255));
+                ((ImageView)v).setColorFilter(Color.argb(100, 0, 255, 255));
+                selectedCard = (ImageView)v;
+            }
+        }
     }
 }

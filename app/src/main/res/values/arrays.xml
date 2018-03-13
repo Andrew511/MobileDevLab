@@ -57,6 +57,11 @@
         <item>@id/card3</item>
     </array>
 
+    <integer-array name="fieldSpots">
+        <item>@id/fieldCard1</item>
+        <item>@id/fieldCard2</item>
+    </integer-array>
+
 
 
 </resources>
