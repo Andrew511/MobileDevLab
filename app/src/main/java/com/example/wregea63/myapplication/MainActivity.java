@@ -1,12 +1,16 @@
 package com.example.wregea63.myapplication;
 
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView selectedCard;
     private int tableSpot = 0;
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    Fragment war = new mathWar();
+    Fragment table = new Table();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_portrait);
             currLay = R.layout.activity_portrait;
         }
+
+        fragmentTransaction.add(R.id.fragmentHolder, table, "table");
 
         TypedArray images = getResources().obtainTypedArray(R.array.cards);
         TypedArray handArray = getResources().obtainTypedArray(R.array.hand);
@@ -85,24 +95,29 @@ public class MainActivity extends AppCompatActivity {
         String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
         ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value+ "\n" +((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
+        if (value == "math" && fragmentManager.findFragmentByTag("war") == null ) {
+            fragmentTransaction.replace(R.id.fragmentHolder, war, "war");
+        }
     }
 
     public void selectCard(View v){
-        if(selectedCard==null){
-            ((ImageView)v).setColorFilter(Color.argb(100, 0, 255, 255));   //setBackgroundColor(Color.CYAN);
-            selectedCard = (ImageView)v;
-        } else {
-            if((ImageView)v == selectedCard){
-                ((ImageView)v).setColorFilter(Color.argb(0, 255, 255, 255));
-                selectedCard = null;
-                TypedArray table = getResources().obtainTypedArray(R.array.fieldSpots);
-                ((ImageView)findViewById(table.getResourceId(tableSpot, 0))).setImageDrawable(((ImageView) v).getDrawable());
-                ((LinearLayout)v.getParent()).removeView(v);
-                tableSpot++;
-            } else{
-                selectedCard.setColorFilter(Color.argb(0, 255, 255, 255));
-                ((ImageView)v).setColorFilter(Color.argb(100, 0, 255, 255));
-                selectedCard = (ImageView)v;
+        if (fragmentManager.findFragmentByTag("war") == null ) {
+            if (selectedCard == null) {
+                ((ImageView) v).setColorFilter(Color.argb(100, 0, 255, 255));   //setBackgroundColor(Color.CYAN);
+                selectedCard = (ImageView) v;
+            } else {
+                if ((ImageView) v == selectedCard) {
+                    ((ImageView) v).setColorFilter(Color.argb(0, 255, 255, 255));
+                    selectedCard = null;
+                    TypedArray table = getResources().obtainTypedArray(R.array.fieldSpots);
+                    ((ImageView) findViewById(table.getResourceId(tableSpot, 0))).setImageDrawable(((ImageView) v).getDrawable());
+                    ((LinearLayout) v.getParent()).removeView(v);
+                    tableSpot++;
+                } else {
+                    selectedCard.setColorFilter(Color.argb(0, 255, 255, 255));
+                    ((ImageView) v).setColorFilter(Color.argb(100, 0, 255, 255));
+                    selectedCard = (ImageView) v;
+                }
             }
         }
     }
