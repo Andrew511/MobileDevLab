@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView selectedCard;
     private int tableSpot = 0;
     FragmentManager fragmentManager = getSupportFragmentManager();
-    android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     Fragment war = new mathWar();
     Fragment table = new Table();
 
@@ -51,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
             currLay = R.layout.activity_portrait;
         }
 
-        fragmentTransaction.add(R.id.fragmentHolder, table, "table");
+        android.support.v4.app.FragmentTransaction createTable = fragmentManager.beginTransaction();
+        createTable.add(R.id.fragmentHolder, table, "table");
+        createTable.commit();
 
         TypedArray images = getResources().obtainTypedArray(R.array.cards);
         TypedArray handArray = getResources().obtainTypedArray(R.array.hand);
@@ -96,7 +97,10 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value+ "\n" +((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
         if (value == "math" && fragmentManager.findFragmentByTag("war") == null ) {
-            fragmentTransaction.replace(R.id.fragmentHolder, war, "war");
+            android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
+            replaceTableWithWar.replace(R.id.fragmentHolder, war, "war");
+            replaceTableWithWar.addToBackStack("TableReplaced");
+            replaceTableWithWar.commit();
         }
     }
 
