@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/mathWarAnswer"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_marginBottom="8dp"
@@ -43,7 +43,7 @@
             android:editable="true"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Answer"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/mathWarSubmit"
             app:layout_constraintStart_toStartOf="parent"

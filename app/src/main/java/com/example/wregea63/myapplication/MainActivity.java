@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Table.OnFragmentInteractionListener, mathWar.OnFragmentInteractionListener  {
 
     private ImageView selectedCard;
     private int tableSpot = 0;
@@ -50,13 +50,14 @@ public class MainActivity extends AppCompatActivity {
             currLay = R.layout.activity_portrait;
         }
 
-        android.support.v4.app.FragmentTransaction createTable = fragmentManager.beginTransaction();
-        createTable.add(R.id.fragmentHolder, table, "table");
-        createTable.commit();
+        Table tableFragment = new Table();
+        android.support.v4.app.FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragmentHolder, tableFragment);
+        fragmentTransaction.commit();
 
         TypedArray images = getResources().obtainTypedArray(R.array.cards);
         TypedArray handArray = getResources().obtainTypedArray(R.array.hand);
-        (findViewById(R.id.mathWarSubmit)).setEnabled(false);
 
         for (int i = 0; i < getResources().getInteger(R.integer.handSize); i++) {
             int choice = (int) (Math.random() * images.length());
@@ -92,11 +93,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void setPlayerCard(int cardId) {
+        ((ImageView)findViewById(R.id.fieldCard1)).setImageDrawable(getDrawable(cardId));
+
+    }
+
+    public void setOpponentCard(int cardId) {
+        ((ImageView)findViewById(R.id.fieldCard2)).setImageDrawable(getDrawable(cardId));
+
+    }
+
     public void sendChat(View v){
         String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
         ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value+ "\n" +((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
-        if (value == "math" && fragmentManager.findFragmentByTag("war") == null ) {
+        if (value.equals("math") && fragmentManager.findFragmentByTag("war") == null ) {
             android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
             replaceTableWithWar.replace(R.id.fragmentHolder, war, "war");
             replaceTableWithWar.addToBackStack("TableReplaced");
