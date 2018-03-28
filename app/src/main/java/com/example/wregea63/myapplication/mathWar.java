@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -24,7 +25,6 @@ public class mathWar extends Fragment {
 
     private int answer;
     private String expression;
-    private String attempt;
     private OnFragmentInteractionListener mListener;
 
     public mathWar() {
@@ -49,8 +49,6 @@ public class mathWar extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -61,10 +59,14 @@ public class mathWar extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void answerSubmitted() {
+    public void submitAnswer(View view) {
         if (mListener != null) {
             String attempt = ((EditText)getActivity().findViewById(R.id.mathWarAnswer)).getText().toString();
-            //mListener.submitAnswer(attempt);
+            if (testCorrect(attempt)) {
+                mListener.sendScore(expression + answer, 1);
+                generateProblem();
+            }
+            ((EditText)getActivity().findViewById(R.id.mathWarAnswer)).setText("");
         }
     }
 
@@ -97,7 +99,7 @@ public class mathWar extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        //void submitAnswer(String Answer);
+        void sendScore(String Answer, int points);
     }
 
     private void generateProblem() {
@@ -121,12 +123,12 @@ public class mathWar extends Fragment {
             answer = argument1 * argument2;
             expression = argument1 + " * " + argument2 + " = ";
         }
-
+        ((TextView)getActivity().findViewById(R.id.mathWarQuestion)).setText(expression);
     }
 
-    public boolean testCorrect(int attempt) {
+    public boolean testCorrect(String attempt) {
         boolean correct = false;
-        if (attempt == answer) {
+        if (Integer.parseInt(attempt) == answer) {
             correct = true;
         }
         return correct;

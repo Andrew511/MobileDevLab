@@ -137,4 +137,9 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             }
         }
     }
+
+    public void sendScore(String Answer, int score) {
+        TextView playerScore = ((TextView)findViewById(R.id.player2Score));
+        playerScore.setText(Integer.parseInt((String)playerScore.getText()) + score);
+    }
 }
