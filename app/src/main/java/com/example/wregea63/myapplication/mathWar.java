@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.Random;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +22,9 @@ import android.widget.EditText;
  */
 public class mathWar extends Fragment {
 
+    private int answer;
+    private String expression;
+    private String attempt;
     private OnFragmentInteractionListener mListener;
 
     public mathWar() {
@@ -58,8 +63,8 @@ public class mathWar extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void answerSubmitted() {
         if (mListener != null) {
-            String answer = ((EditText)getActivity().findViewById(R.id.mathWarAnswer)).getText().toString();
-            //mListener.submitAnswer(answer);
+            String attempt = ((EditText)getActivity().findViewById(R.id.mathWarAnswer)).getText().toString();
+            //mListener.submitAnswer(attempt);
         }
     }
 
@@ -95,7 +100,35 @@ public class mathWar extends Fragment {
         //void submitAnswer(String Answer);
     }
 
-    private generateProblem() {
-        
+    private void generateProblem() {
+
+        int questionType = (int) (Math.random() * 3);
+        int argument1 = (int)(Math.random() * 16);
+        int argument2 = (int)(Math.random() * 16);
+        while (argument2 > argument1 && questionType == 1) { //make sure subtractions don't result in negative numbers
+            argument2 = (int) (Math.random() * 16);
+        }
+
+        if (questionType == 0) {
+            answer = argument1 + argument2;
+            expression = argument1 + " + " + argument2 + " = ";
+        }
+        else if (questionType == 1) {
+            answer = argument1 - argument2;
+            expression = argument1 + " - " + argument2 + " = ";
+        }
+        else if (questionType == 2) {
+            answer = argument1 * argument2;
+            expression = argument1 + " * " + argument2 + " = ";
+        }
+
+    }
+
+    public boolean testCorrect(int attempt) {
+        boolean correct = false;
+        if (attempt == answer) {
+            correct = true;
+        }
+        return correct;
     }
 }
