@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
 
     public void sendChat(View v){
         String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
-        ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value+ "\n" +((TextView)findViewById(R.id.chatLog)).getText());
+        ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value + "\n" + ((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
         if (value.equals("math") && fragmentManager.findFragmentByTag("war") == null ) {
             android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
@@ -138,8 +138,15 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
         }
     }
 
-    public void sendScore(String Answer, int score) {
+    public void sendScore(String answer, int score) {
         TextView playerScore = ((TextView)findViewById(R.id.player2Score));
-        playerScore.setText(Integer.parseInt((String)playerScore.getText()) + score);
+        playerScore.setText((Integer.parseInt((String)playerScore.getText()) + score) + "" );
+        ((TextView)findViewById(R.id.completedQuestions)).setText(answer + "\n" + ((TextView)findViewById(R.id.completedQuestions)).getText());
+    }
+
+    public void submitAnswer(View v) {
+        if (fragmentManager.findFragmentByTag("war") != null) {
+            ((mathWar)fragmentManager.findFragmentByTag("war")).submitAnswer(v);
+        }
     }
 }
