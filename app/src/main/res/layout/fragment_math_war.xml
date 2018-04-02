@@ -42,12 +42,12 @@
             android:layout_marginTop="8dp"
             android:editable="true"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/mathWarSubmit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintTop_toBottomOf="@+id/mathWarQuestion" />
 
         <Button
             android:id="@+id/mathWarSubmit"
@@ -56,11 +56,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/submit"
             android:onClick="submitAnswer"
+            android:text="@string/submit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintTop_toBottomOf="@+id/mathWarQuestion" />
     </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>
