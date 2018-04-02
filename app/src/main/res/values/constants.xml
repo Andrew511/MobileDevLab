@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="handSize">3</integer>
+    <integer name="startScore">0</integer>
 
 </resources>
