@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity implements Table.OnFragmentInteractionListener, mathWar.OnFragmentInteractionListener  {
 
     private ImageView selectedCard;
@@ -26,28 +28,17 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
     FragmentManager fragmentManager = getSupportFragmentManager();
     Fragment war = new mathWar();
     Fragment table = new Table();
+    String playerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int currLay;
         if(getResources().getConfiguration().orientation==
                 Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_landscape);
-            currLay = R.layout.activity_landscape;
-            /*Button button = (Button) findViewById(R.id.chatSend);
-            final TextView chatLog = (TextView) findViewById(R.id.chatLog);
-            final EditText chatMessage = (EditText) findViewById(R.id.chatMessage);
-            button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    String text =  chatMessage.getText() + "/n" + chatLog.getText();
-                    chatLog.setText(text);
-                }
-            }); */
         } else{
             setContentView(R.layout.activity_portrait);
-            currLay = R.layout.activity_portrait;
         }
 
         Table tableFragment = new Table();
@@ -65,31 +56,13 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             ImageView cardView = ((ImageView)findViewById(handArray.getResourceId(i, R.id.card1)));
             cardView.setImageResource(cardChoice);
             cardView.setTag(cardChoice);
-            /*cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Add your code in here!
-                    if (v.isSelected()) {
-                        if (findViewById(R.id.fieldCard1).getTag() != null) {
-                            ((ImageView)findViewById(R.id.fieldCard1)).setImageResource((int)v.getTag());
-                            (findViewById(R.id.fieldCard1)).setTag(v.getTag());
-                            v.setVisibility(View.GONE);
-                        }
-                        else if (findViewById(R.id.fieldCard2).getTag() != null) {
-                            ((ImageView)findViewById(R.id.fieldCard2)).setImageResource((int)v.getTag());
-                            (findViewById(R.id.fieldCard2)).setTag(v.getTag());
-                            v.setVisibility(View.GONE);
-                        }
-                    }
-                }
-            });*/
         }
 
-        //images.recycle();
         //this leaves the keyboard hidden on load
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
+        playerName = getIntent().getStringExtra("USERNAME");
+        ((TextView)findViewById(R.id.player1Name)).setText(playerName);
 
     }
 
@@ -106,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
 
     public void sendChat(View v){
         String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
-        ((TextView)findViewById(R.id.chatLog)).setText("Name: " + value + "\n" + ((TextView)findViewById(R.id.chatLog)).getText());
+        ((TextView)findViewById(R.id.chatLog)).setText(playerName + value + "\n" + ((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
         if (value.equals("math") && fragmentManager.findFragmentByTag("war") == null ) {
             android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
