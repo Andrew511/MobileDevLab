@@ -1,7 +1,10 @@
 package com.example.wregea63.myapplication;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -21,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 
     int USERNAME_LENGTH = 4;
     int PASSWORD_LENGTH = 6;
+    LoginDBContract.LoginDBHelper loginDBHelper;
+    SQLiteDatabase rdb;
 
 
     @Override
@@ -40,6 +45,10 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
+
+        loginDBHelper = new
+                LoginDBContract.LoginDBHelper(getApplicationContext());
+        rdb = loginDBHelper.getReadableDatabase();
     }
 
     public void onRegistering(View v) {
@@ -71,19 +80,44 @@ public class LoginActivity extends AppCompatActivity {
         String pass = ((EditText)findViewById(R.id.inputPassword)).getText().toString();
         Intent login = new Intent(getBaseContext(), MainActivity.class);
 
-        //Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}");
-        //Matcher match = pattern.matcher(pass);
+        String[] selectionArgs = { username };
+        String[] projection = {LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME};
+
+        Cursor cursor = rdb.query(
+                LoginDBContract.LoginEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME + " = ?",              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+
         if (username.length() < USERNAME_LENGTH) {
             Toast.makeText(getApplicationContext(), "Username must be 4 characters or more.", Toast.LENGTH_SHORT).show();
         }
         else if (pass.length() < PASSWORD_LENGTH) {
             Toast.makeText(getApplicationContext(), "Password must be 6 characters or more.", Toast.LENGTH_SHORT).show();
         }
-        else if (/*!match.matches()/*("pass").matches()*/!pass.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}")) {
-            Toast.makeText(getApplicationContext(), pass, Toast.LENGTH_SHORT).show();
+        else if (!pass.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}")) {
             Toast.makeText(getApplicationContext(), "Password must contain a capital letter, a lowercase letter, and a number.", Toast.LENGTH_SHORT).show();
         }
+        else if (cursor.moveToFirst()) //check if cursor is empty, if not, username is taken
+        {
+            Toast.makeText(getApplicationContext(), "Username is already taken", Toast.LENGTH_SHORT).show();
+        }
         else {
+            SQLiteDatabase db = loginDBHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME,
+                    username);
+            values.put(LoginDBContract.LoginEntry.COLUMN_NAME_PASSWORD,
+                    pass);
+            db.insert(
+                    LoginDBContract.LoginEntry.TABLE_NAME,
+                    null,
+                    values);
             login.putExtra("USERNAME", username);
             startActivity(login);
         }
@@ -92,10 +126,25 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         String username = ((EditText)findViewById(R.id.inputLogin)).getText().toString();
         String pass = ((EditText)findViewById(R.id.inputPassword)).getText().toString();
-        if (!username.equals("Erik")) {
-            Toast.makeText(getApplicationContext(), "Username is incorrect", Toast.LENGTH_SHORT).show();
+
+        String[] selectionArgs = { username };
+        String[] projection = {LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME, LoginDBContract.LoginEntry.COLUMN_NAME_PASSWORD};
+
+        Cursor cursor = rdb.query(
+                LoginDBContract.LoginEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME + " = ?",              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        if (!cursor.moveToFirst()) //check if username exists in db
+        {
+            Toast.makeText(getApplicationContext(), "Account with Username " + username + " does not exist.", Toast.LENGTH_SHORT).show();
         }
-        else if (!pass.equals("Krohn1")) {
+        else if (!pass.equals(cursor.getString(cursor.getColumnIndex(LoginDBContract.LoginEntry.COLUMN_NAME_PASSWORD)))) {
             Toast.makeText(getApplicationContext(), "Password is incorrect", Toast.LENGTH_SHORT).show();
         }
         else {
