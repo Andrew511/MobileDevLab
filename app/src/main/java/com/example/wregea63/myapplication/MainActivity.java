@@ -1,6 +1,8 @@
 package com.example.wregea63.myapplication;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -66,6 +69,94 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Object tag;
+        ImageView cardView;
+
+        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("USERNAME", playerName);
+        editor.putString("OPPONENTNAME", ((TextView)findViewById(R.id.player2Name)).getText().toString());
+        editor.putString("PREVMATH", ((TextView)findViewById(R.id.completedQuestions)).getText().toString());
+        if(getResources().getConfiguration().orientation==
+                Configuration.ORIENTATION_PORTRAIT) {
+            editor.putString("CHATLOG", ((TextView) findViewById(R.id.chatLog)).getText().toString());
+        }
+        try {
+            tag = findViewById(R.id.card1).getTag();
+            if (tag != null) {
+                editor.putInt("CARD1", (int) tag);
+            }
+        }
+        catch (NullPointerException e) {
+
+        }
+        try {
+            tag = findViewById(R.id.card2).getTag();
+            if (tag != null) {
+                editor.putInt("CARD2", (int) tag);
+            }
+        }
+        catch (NullPointerException e){
+
+        }
+        try {
+            tag = findViewById(R.id.card3).getTag();
+            if (tag != null) {
+                editor.putInt("CARD3", (int) tag);
+            }
+        }
+        catch (NullPointerException e) {
+
+        }
+        editor.commit();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int currCard;
+        ImageView cardView;
+
+        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+
+        playerName = sharedPref.getString("USERNAME", "Player1");
+        ((TextView) findViewById(R.id.completedQuestions)).setText(sharedPref.getString("PREVMATH", ""));
+        if (getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            ((TextView) findViewById(R.id.chatLog)).setText(sharedPref.getString("CHATLOG", ""));
+        }
+        currCard = sharedPref.getInt("CARD1", -1);
+        cardView = ((ImageView)findViewById(R.id.card1));
+        if (currCard != -1) {
+            cardView.setImageResource(currCard);
+            cardView.setTag(currCard);
+        }
+        else {
+            ((LinearLayout)cardView.getParent()).removeView(cardView);
+        }
+        currCard = sharedPref.getInt("CARD2", -1);
+        cardView = ((ImageView)findViewById(R.id.card1));
+        if (currCard != -1) {
+            cardView.setImageResource(currCard);
+            cardView.setTag(currCard);
+        }
+        else {
+            ((LinearLayout)cardView.getParent()).removeView(cardView);
+        }
+        currCard = sharedPref.getInt("CARD3", -1);
+        cardView = ((ImageView)findViewById(R.id.card1));
+        if (currCard != -1) {
+            cardView.setImageResource(currCard);
+            cardView.setTag(currCard);
+        }
+        else {
+            ((LinearLayout)cardView.getParent()).removeView(cardView);
+        }
+
+    }
 
     public void setPlayerCard(int cardId) {
         ((ImageView)findViewById(R.id.fieldCard1)).setImageDrawable(getDrawable(cardId));
@@ -87,6 +178,12 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             replaceTableWithWar.addToBackStack("TableReplaced");
             replaceTableWithWar.commit();
         }
+        else if (value.equals("table") && fragmentManager.findFragmentByTag("table") == null ) {
+            android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
+            replaceTableWithWar.replace(R.id.fragmentHolder, table, "table");
+            replaceTableWithWar.addToBackStack("TableReplaced");
+            replaceTableWithWar.commit();
+        }
     }
 
     public void selectCard(View v){
@@ -95,11 +192,13 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
                 ((ImageView) v).setColorFilter(Color.argb(100, 0, 255, 255));   //setBackgroundColor(Color.CYAN);
                 selectedCard = (ImageView) v;
             } else {
-                if ((ImageView) v == selectedCard) {
+                if ((ImageView) v == selectedCard && tableSpot < 2) {
                     ((ImageView) v).setColorFilter(Color.argb(0, 255, 255, 255));
                     selectedCard = null;
                     TypedArray table = getResources().obtainTypedArray(R.array.fieldSpots);
-                    ((ImageView) findViewById(table.getResourceId(tableSpot, 0))).setImageDrawable(((ImageView) v).getDrawable());
+                    ((ImageView) findViewById(table.getResourceId(tableSpot, 0))).setImageResource((int)v.getTag());
+                    ((ImageView) findViewById(table.getResourceId(tableSpot, 0))).setTag(v.getTag());
+                    ((ImageView) v).setTag(null);
                     ((LinearLayout) v.getParent()).removeView(v);
                     tableSpot++;
                 } else {

@@ -1,12 +1,15 @@
 package com.example.wregea63.myapplication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 
 /**
@@ -14,7 +17,7 @@ import android.view.ViewGroup;
  * Activities that contain this fragment must implement the
  * {@link Table.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Table#newInstance} factory method to
+ * Use the {@link Table#} factory method to
  * create an instance of this fragment.
  */
 public class Table extends Fragment {
@@ -39,8 +42,56 @@ public class Table extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_table, container, false);
+
+
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        int currCard;
+        ImageView cardView;
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        Object tag = getActivity().findViewById(R.id.fieldCard1).getTag();
+        if (tag != null) {
+            editor.putInt("FIELDCARD1", (int) tag);
+        }
+        tag = getActivity().findViewById(R.id.fieldCard2).getTag();
+        if (tag != null) {
+            editor.putInt("FIELDCARD2", (int) tag);
+        }
+
+        editor.commit();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        int currCard;
+        ImageView cardView;
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+
+        currCard = sharedPref.getInt("FIELDCARD1", -1);
+        cardView = ((ImageView)getActivity().findViewById(R.id.fieldCard1));
+        if (currCard != -1) {
+            cardView.setImageResource(currCard);
+            cardView.setTag(currCard);
+        }
+        currCard = sharedPref.getInt("FIELDCARD2", -1);
+        cardView = ((ImageView)getActivity().findViewById(R.id.fieldCard2));
+        if (currCard != -1) {
+            cardView.setImageResource(currCard);
+            cardView.setTag(currCard);
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {

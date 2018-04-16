@@ -1,8 +1,10 @@
 package com.example.wregea63.myapplication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +51,8 @@ public class mathWar extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -63,7 +67,6 @@ public class mathWar extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_math_war, container, false);
     }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void submitAnswer(View view) {
         if (mListener != null) {
@@ -91,6 +94,36 @@ public class mathWar extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("EXPRESSION", expression);
+        editor.putInt("ANSWER", answer);
+
+        editor.commit();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        String restExp = sharedPref.getString("EXPRESSION", "");
+        int restAns = sharedPref.getInt("ANSWER", -1);
+        if (restExp != "" && restAns != -1) {
+            expression = restExp;
+            answer = restAns;
+            ((TextView)getActivity().findViewById(R.id.mathWarQuestion)).setText(expression);
+        }
+
+
     }
 
     /**
