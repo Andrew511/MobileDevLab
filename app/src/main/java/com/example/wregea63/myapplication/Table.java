@@ -55,14 +55,26 @@ public class Table extends Fragment {
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
+        Object tag;
 
-        Object tag = getActivity().findViewById(R.id.fieldCard1).getTag();
-        if (tag != null) {
-            editor.putInt("FIELDCARD1", (int) tag);
+
+        try {
+            tag = getActivity().findViewById(R.id.fieldCard1).getTag();
+            if (tag != null) {
+                editor.putInt("FIELDCARD1", (int) tag);
+            }
         }
-        tag = getActivity().findViewById(R.id.fieldCard2).getTag();
-        if (tag != null) {
-            editor.putInt("FIELDCARD2", (int) tag);
+        catch (NullPointerException e) {
+            editor.remove("FIELDCARD1");
+        }
+        try {
+            tag = getActivity().findViewById(R.id.fieldCard2).getTag();
+            if (tag != null) {
+                editor.putInt("FIELDCARD2", (int) tag);
+            }
+        }
+        catch (NullPointerException e) {
+            editor.remove("FIELDCARD2");
         }
 
         editor.commit();

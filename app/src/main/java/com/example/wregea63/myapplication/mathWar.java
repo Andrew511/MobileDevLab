@@ -58,6 +58,11 @@ public class mathWar extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         generateProblem();
     }
 
@@ -118,8 +123,8 @@ public class mathWar extends Fragment {
         String restExp = sharedPref.getString("EXPRESSION", "");
         int restAns = sharedPref.getInt("ANSWER", -1);
         if (restExp != "" && restAns != -1) {
-            expression = restExp;
-            answer = restAns;
+            this.expression = restExp;
+            this.answer = restAns;
             ((TextView)getActivity().findViewById(R.id.mathWarQuestion)).setText(expression);
         }
 

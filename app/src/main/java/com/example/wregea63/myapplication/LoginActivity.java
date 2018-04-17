@@ -1,10 +1,13 @@
 package com.example.wregea63.myapplication;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.regex.Matcher;
@@ -32,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int currLay;
+        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
         if(getResources().getConfiguration().orientation==
                 Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_login_portrait);
@@ -40,15 +45,43 @@ public class LoginActivity extends AppCompatActivity {
             setContentView(R.layout.activity_login_portrait);
             currLay = R.layout.activity_login_portrait;
         }
+        if (sharedPref.getBoolean("REGISTERING", false)) {
+            ((CheckBox) findViewById(R.id.checkboxRegister)).setChecked(true);
+            onRegistering(findViewById(R.id.checkboxRegister));
+        }
+        else
         ((Button)findViewById(R.id.loginSubmit)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 login();
             }
         });
+        ((TextView)findViewById(R.id.inputLogin)).setText(sharedPref.getString("LOGINUSER", ""));
+        ((TextView)findViewById(R.id.inputPassword)).setText(sharedPref.getString("LOGINPASS", ""));
+
 
         loginDBHelper = new
                 LoginDBContract.LoginDBHelper(getApplicationContext());
         rdb = loginDBHelper.getReadableDatabase();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        String username = ((EditText)findViewById(R.id.inputLogin)).getText().toString();
+        String pass = ((EditText)findViewById(R.id.inputPassword)).getText().toString();
+        editor.putBoolean("REGISTERING", ((CheckBox) findViewById(R.id.checkboxRegister)).isChecked());
+
+        if (username != "") {
+            editor.putString("LOGINUSER", username);
+        }
+        if (pass != "") {
+            editor.putString("LOGINPASS", pass);
+        }
+        editor.commit();
     }
 
     public void onRegistering(View v) {

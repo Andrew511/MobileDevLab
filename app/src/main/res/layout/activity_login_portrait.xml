@@ -65,7 +65,7 @@
         android:layout_height="47dp"
         android:layout_marginBottom="168dp"
         android:layout_marginStart="32dp"
-        android:text="Login"
+        android:text="Log in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

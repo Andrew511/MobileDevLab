@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -78,11 +79,13 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
         SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("USERNAME", playerName);
+        editor.putInt("TABLESPOT", tableSpot);
         editor.putString("OPPONENTNAME", ((TextView)findViewById(R.id.player2Name)).getText().toString());
         editor.putString("PREVMATH", ((TextView)findViewById(R.id.completedQuestions)).getText().toString());
-        if(getResources().getConfiguration().orientation==
-                Configuration.ORIENTATION_PORTRAIT) {
+        try {
             editor.putString("CHATLOG", ((TextView) findViewById(R.id.chatLog)).getText().toString());
+        }
+        catch (NullPointerException e) {
         }
         try {
             tag = findViewById(R.id.card1).getTag();
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             }
         }
         catch (NullPointerException e) {
-
+            editor.remove("CARD1");
         }
         try {
             tag = findViewById(R.id.card2).getTag();
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             }
         }
         catch (NullPointerException e){
-
+            editor.remove("CARD2");
         }
         try {
             tag = findViewById(R.id.card3).getTag();
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             }
         }
         catch (NullPointerException e) {
-
+            editor.remove("CARD3");
         }
         editor.commit();
     }
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
 
         SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
 
+        tableSpot = sharedPref.getInt("TABLESPOT", 0);
         playerName = sharedPref.getString("USERNAME", "Player1");
         ((TextView) findViewById(R.id.completedQuestions)).setText(sharedPref.getString("PREVMATH", ""));
         if (getResources().getConfiguration().orientation ==
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             ((LinearLayout)cardView.getParent()).removeView(cardView);
         }
         currCard = sharedPref.getInt("CARD2", -1);
-        cardView = ((ImageView)findViewById(R.id.card1));
+        cardView = ((ImageView)findViewById(R.id.card2));
         if (currCard != -1) {
             cardView.setImageResource(currCard);
             cardView.setTag(currCard);
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             ((LinearLayout)cardView.getParent()).removeView(cardView);
         }
         currCard = sharedPref.getInt("CARD3", -1);
-        cardView = ((ImageView)findViewById(R.id.card1));
+        cardView = ((ImageView)findViewById(R.id.card3));
         if (currCard != -1) {
             cardView.setImageResource(currCard);
             cardView.setTag(currCard);
@@ -170,19 +174,22 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
 
     public void sendChat(View v){
         String value = ((EditText)findViewById(R.id.chatMessage)).getText().toString();
-        ((TextView)findViewById(R.id.chatLog)).setText(playerName + value + "\n" + ((TextView)findViewById(R.id.chatLog)).getText());
+        ((TextView)findViewById(R.id.chatLog)).setText(playerName + ": " + value + "\n" + ((TextView)findViewById(R.id.chatLog)).getText());
         ((EditText)findViewById(R.id.chatMessage)).setText("");
-        if (value.equals("math") && fragmentManager.findFragmentByTag("war") == null ) {
+        View fragHolder = findViewById(R.id.fragmentHolder);
+        if (value.equals("math") && fragHolder.getTag() != "war") {
             android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
             replaceTableWithWar.replace(R.id.fragmentHolder, war, "war");
             replaceTableWithWar.addToBackStack("TableReplaced");
             replaceTableWithWar.commit();
+            fragHolder.setTag("war");
         }
-        else if (value.equals("table") && fragmentManager.findFragmentByTag("table") == null ) {
+        else if (value.equals("table") && fragHolder.getTag() != "table" ) {
             android.support.v4.app.FragmentTransaction replaceTableWithWar = fragmentManager.beginTransaction();
             replaceTableWithWar.replace(R.id.fragmentHolder, table, "table");
             replaceTableWithWar.addToBackStack("TableReplaced");
             replaceTableWithWar.commit();
+            fragHolder.setTag("table");
         }
     }
 
