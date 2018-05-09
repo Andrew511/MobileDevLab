@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="cards">
-        <item>@drawable/c1</item>
-        <item>@drawable/c2</item>
-        <item>@drawable/c3</item>
-        <item>@drawable/c4</item>
-        <item>@drawable/c5</item>
-        <item>@drawable/c6</item>
-        <item>@drawable/c7</item>
-        <item>@drawable/c8</item>
-        <item>@drawable/c9</item>
-        <item>@drawable/cj</item>
-        <item>@drawable/ck</item>
-        <item>@drawable/cq</item>
-        <item>@drawable/d1</item>
-        <item>@drawable/d2</item>
-        <item>@drawable/d3</item>
-        <item>@drawable/d4</item>
-        <item>@drawable/d5</item>
-        <item>@drawable/d6</item>
-        <item>@drawable/d7</item>
-        <item>@drawable/d8</item>
-        <item>@drawable/d9</item>
-        <item>@drawable/dj</item>
-        <item>@drawable/dk</item>
-        <item>@drawable/dq</item>
-        <item>@drawable/h1</item>
-        <item>@drawable/h2</item>
-        <item>@drawable/h3</item>
-        <item>@drawable/h4</item>
-        <item>@drawable/h5</item>
-        <item>@drawable/h6</item>
-        <item>@drawable/h7</item>
-        <item>@drawable/h8</item>
-        <item>@drawable/h9</item>
-        <item>@drawable/hj</item>
-        <item>@drawable/hk</item>
-        <item>@drawable/hq</item>
-        <item>@drawable/s1</item>
-        <item>@drawable/s2</item>
-        <item>@drawable/s3</item>
-        <item>@drawable/s4</item>
-        <item>@drawable/s5</item>
-        <item>@drawable/s6</item>
-        <item>@drawable/s7</item>
-        <item>@drawable/s8</item>
-        <item>@drawable/s9</item>
-        <item>@drawable/sj</item>
-        <item>@drawable/sk</item>
-        <item>@drawable/sq</item>
+        <item name="c1">@drawable/c1</item>
+        <item name="c2">@drawable/c2</item>
+        <item name="c3">@drawable/c3</item>
+        <item name="c4">@drawable/c4</item>
+        <item name="c5">@drawable/c5</item>
+        <item name="c6">@drawable/c6</item>
+        <item name="c7">@drawable/c7</item>
+        <item name="c8">@drawable/c8</item>
+        <item name="c9">@drawable/c9</item>
+        <item name="cj">@drawable/cj</item>
+        <item name="ck">@drawable/ck</item>
+        <item name="cq">@drawable/cq</item>
+        <item name="d1">@drawable/d1</item>
+        <item name="d2">@drawable/d2</item>
+        <item name="d3">@drawable/d3</item>
+        <item name="d4">@drawable/d4</item>
+        <item name="d5">@drawable/d5</item>
+        <item name="d6">@drawable/d6</item>
+        <item name="d7">@drawable/d7</item>
+        <item name="d8">@drawable/d8</item>
+        <item name="d9">@drawable/d9</item>
+        <item name="dj">@drawable/dj</item>
+        <item name="dk">@drawable/dk</item>
+        <item name="dq">@drawable/dq</item>
+        <item name="h1">@drawable/h1</item>
+        <item name="h2">@drawable/h2</item>
+        <item name="h3">@drawable/h3</item>
+        <item name="h4">@drawable/h4</item>
+        <item name="h5">@drawable/h5</item>
+        <item name="h6">@drawable/h6</item>
+        <item name="h7">@drawable/h7</item>
+        <item name="h8">@drawable/h8</item>
+        <item name="h9">@drawable/h9</item>
+        <item name="hj">@drawable/hj</item>
+        <item name="hk">@drawable/hk</item>
+        <item name="hq">@drawable/hq</item>
+        <item name="s1">@drawable/s1</item>
+        <item name="s2">@drawable/s2</item>
+        <item name="s3">@drawable/s3</item>
+        <item name="s4">@drawable/s4</item>
+        <item name="s5">@drawable/s5</item>
+        <item name="s6">@drawable/s6</item>
+        <item name="s7">@drawable/s7</item>
+        <item name="s8">@drawable/s8</item>
+        <item name="s9">@drawable/s9</item>
+        <item name="sj">@drawable/sj</item>
+        <item name="sk">@drawable/sk</item>
+        <item name="sq">@drawable/sq</item>
     </array>
 
     <array name="hand">

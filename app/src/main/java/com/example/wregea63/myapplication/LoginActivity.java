@@ -1,5 +1,6 @@
 package com.example.wregea63.myapplication;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -157,8 +158,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        String username = ((EditText)findViewById(R.id.inputLogin)).getText().toString();
-        String pass = ((EditText)findViewById(R.id.inputPassword)).getText().toString();
+        final String username = ((EditText)findViewById(R.id.inputLogin)).getText().toString();
+        final String pass = ((EditText)findViewById(R.id.inputPassword)).getText().toString();
 
         String[] selectionArgs = { username };
         String[] projection = {LoginDBContract.LoginEntry.COLUMN_NAME_USERNAME, LoginDBContract.LoginEntry.COLUMN_NAME_PASSWORD};
@@ -181,9 +182,23 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Password is incorrect", Toast.LENGTH_SHORT).show();
         }
         else {
-            Intent login = new Intent(getBaseContext(), MainActivity.class);
-            login.putExtra("USERNAME", username);
-            startActivity(login);
+            BroadcastReceiver loginReciever = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Intent login = new Intent(getBaseContext(), MainActivity.class);
+                    login.putExtra("USERNAME", username);
+                    int lobbyId = intent.getIntExtra("LOBBY", -1);
+                    if (lobbyId != -1) {
+                        login.putExtra("LOBBYID", lobbyId);
+                        startActivity(login);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Error joining Lobby", Toast.LENGTH_LONG);
+                    }
+                }
+            };
+
+            WarGameService.startActionJoinGame(this, username);
         }
     }
 }

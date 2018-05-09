@@ -1,7 +1,9 @@
 package com.example.wregea63.myapplication;
 
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -25,6 +27,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements Table.OnFragmentInteractionListener, mathWar.OnFragmentInteractionListener  {
 
     private ImageView selectedCard;
@@ -33,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
     Fragment war = new mathWar();
     Fragment table = new Table();
     String playerName;
+    ArrayList<String> cards;
+    ArrayList<String> availableCards;
+    int lobbyId;
+    boolean gameStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +52,15 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
         } else{
             setContentView(R.layout.activity_portrait);
         }
+        lobbyId = getIntent().getIntExtra("LOBBYID", -1);
+        gameStarted = false;
 
         Table tableFragment = new Table();
         android.support.v4.app.FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragmentHolder, tableFragment);
         fragmentTransaction.commit();
-
+        /*
         TypedArray images = getResources().obtainTypedArray(R.array.cards);
         TypedArray handArray = getResources().obtainTypedArray(R.array.hand);
 
@@ -61,12 +71,49 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             cardView.setImageResource(cardChoice);
             cardView.setTag(cardChoice);
         }
+        */
 
         //this leaves the keyboard hidden on load
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         playerName = getIntent().getStringExtra("USERNAME");
         ((TextView)findViewById(R.id.player1Name)).setText(playerName);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BroadcastReceiver lobbyFullReciever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                gameStarted = intent.getBooleanExtra("LOBBYFULL", false);
+            }
+        };
+        while (!gameStarted) {
+            WarGameService.startActionGameStarted(this, lobbyId);
+        }
+
+        BroadcastReceiver cardsReciever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                cards = intent.getStringArrayListExtra("CARDS");
+            }
+        };
+        if (cards == null) {
+            WarGameService.startActionGetCards(this, playerName, lobbyId);
+        }
+        availableCards = cards;
+        TypedArray images = getResources().obtainTypedArray(R.array.cards);
+        TypedArray handArray = getResources().obtainTypedArray(R.array.hand);
+
+        for (int i = 0; i < getResources().getInteger(R.integer.handSize); i++) {
+            int choice = (int) (Math.random() * availableCards.size());
+            // get card image by product of the cards drawable name (name of the card, e.g. c3, d5, hq, s1)
+            int cardChoice = images.getResourceId(choice, this.getResources().getIdentifier(availableCards.get(choice), "drawable", this.getPackageName()));
+            ImageView cardView = ((ImageView)findViewById(handArray.getResourceId(i, R.id.card1)));
+            cardView.setImageResource(cardChoice);
+            cardView.setTag(cardChoice);
+        }
 
     }
 
