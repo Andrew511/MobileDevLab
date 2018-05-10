@@ -136,7 +136,7 @@ public class WarGameService extends IntentService {
         String urlUser;
         try {
             urlUser = URLEncoder.encode(param1, "utf-8");
-            String url = "webdev.cs.uwosh.edu/students/wregea63/JoinGame.php?username=" + urlUser;
+            String url = "http://webdev.cs.uwosh.edu/students/wregea63/JoinGame.php?username=" + urlUser;
             StringRequest getLobbyId = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
 
@@ -174,7 +174,7 @@ public class WarGameService extends IntentService {
             // never pass passwords in a get request, only do with post,
             // but was unable to figure out adding parameters to volley post on short notice and will do later
             // ToDo don't pass password and username over get request
-            String url = "webdev.cs.uwosh.edu/students/wregea63/Login.php?username=" + urlUser + "&password=" + password;
+            String url = "http://webdev.cs.uwosh.edu/students/wregea63/Login.php?username=" + urlUser + "&password=" + password;
             StringRequest userLogin = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
 
@@ -206,7 +206,7 @@ public class WarGameService extends IntentService {
             // never pass passwords in a get request, only do with post,
             // but was unable to figure out adding parameters to volley post on short notice and will do later
             // ToDo don't pass password and username over get request
-            String url = "webdev.cs.uwosh.edu/students/wregea63/Login.php?username=" + urlUser + "&password=" + password;
+            String url = "http://webdev.cs.uwosh.edu/students/wregea63/Login.php?username=" + urlUser + "&password=" + password;
             StringRequest userRegister = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
 
@@ -236,7 +236,7 @@ public class WarGameService extends IntentService {
      */
     private void handleActionGetCards(String param1, int param2) {
         RequestQueue getPlayerCards = Volley.newRequestQueue(this);
-        String url = "webdev.cs.uwosh.edu/students/wregea63/CheckFullLobby.php?tableId=" + param1;
+        String url = "http://webdev.cs.uwosh.edu/students/wregea63/CheckFullLobby.php?tableId=" + param1;
         JsonArrayRequest getCardArray = new JsonArrayRequest(Request.Method.GET, url, new JSONArray()
                 ,
                 new Response.Listener<JSONArray>() {
@@ -269,7 +269,7 @@ public class WarGameService extends IntentService {
 
     private void handleActionCheckFullLobby(int param1) {
         RequestQueue checkFullLobby = Volley.newRequestQueue(this);
-            String url = "webdev.cs.uwosh.edu/students/wregea63/CheckFullLobby.php?tableId=" + param1;
+            String url = "http://webdev.cs.uwosh.edu/students/wregea63/CheckFullLobby.php?tableId=" + param1;
             StringRequest getLobbyFull = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
 

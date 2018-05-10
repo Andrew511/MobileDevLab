@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,10 +25,20 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements Table.OnFragmentInteractionListener, mathWar.OnFragmentInteractionListener  {
 
@@ -93,6 +104,32 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             WarGameService.startActionGameStarted(this, lobbyId);
         }
 
+        final Handler chatHandler = new Handler();
+        final int delay = 5000; //update chat every 5 seconds
+        //using timers is bad, use handler for short timeframes and alarm for longer timeframes
+        chatHandler.postDelayed(new Runnable(){
+            public void run(){
+                RequestQueue chatQueue = Volley.newRequestQueue(getApplicationContext());
+                StringRequest getChat = new StringRequest(Request.Method.GET,
+                        "http://webdev.cs.uwosh.edu/students/wregea63/getChat.php?tableId=" + lobbyId,
+                        new Response.Listener<String>() {
+
+                            public void onResponse(String response) {
+                                //set chat log to whatever the server has
+                                ((TextView)findViewById(R.id.chatLog)).setText(response);
+                            }
+                        }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error joining a lobby", Toast.LENGTH_LONG);
+                    }
+                });
+                chatQueue.add(getChat);
+                chatHandler.postDelayed(this, delay);
+            }
+        }, delay);
+
         BroadcastReceiver cardsReciever = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -112,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             int cardChoice = images.getResourceId(choice, this.getResources().getIdentifier(availableCards.get(choice), "drawable", this.getPackageName()));
             ImageView cardView = ((ImageView)findViewById(handArray.getResourceId(i, R.id.card1)));
             cardView.setImageResource(cardChoice);
-            cardView.setTag(cardChoice);
+            cardView.setTag(availableCards.get(choice));
+            availableCards.remove(choice);
         }
 
     }
@@ -237,6 +275,37 @@ public class MainActivity extends AppCompatActivity implements Table.OnFragmentI
             replaceTableWithWar.addToBackStack("TableReplaced");
             replaceTableWithWar.commit();
             fragHolder.setTag("table");
+        }
+        else {
+            //update chat when you send a message
+            RequestQueue chatQueue = Volley.newRequestQueue(getApplicationContext());
+            final String CHAT = ((TextView)findViewById(R.id.chatLog)).getText().toString();
+            final String TABLE_ID = lobbyId + "";
+            StringRequest updateChat = new StringRequest(Request.Method.POST,
+                    "http://webdev.cs.uwosh.edu/students/wregea63/UpdateChat.php",
+                    new Response.Listener<String>() {
+
+                        public void onResponse(String response) {
+                            //do nothing on response, since you updated, not getting anything back
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error updating the chat", Toast.LENGTH_LONG);
+                }
+            })
+            {
+
+                protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    //send chat to server to update servers chat log
+                    params.put("CHAT", CHAT);
+                    params.put("TABLEID", TABLE_ID);
+                    return params;
+                };
+            };
+            chatQueue.add(updateChat);
         }
     }
 
